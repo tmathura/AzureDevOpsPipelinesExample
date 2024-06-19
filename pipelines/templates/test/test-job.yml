@@ -1,0 +1,37 @@
+# This template is used to run tests and publish code coverage results.
+
+parameters:
+  - name: buildPlatform
+    type: string
+    default: ''
+  - name: buildConfiguration
+    type: string
+    default: ''
+  - name: testProjectName
+    type: string
+    default: ''
+
+steps:
+
+# This task runs the tests and collects the code coverage results.
+- task: VSTest@3
+  displayName: 'Run test'
+  inputs:
+    testSelector: 'testAssemblies'
+    testAssemblyVer2: |
+      **\*${{ parameters.testProjectName }}*.dll
+      !**\*TestAdapter.dll
+      !**\obj\**
+    platform: '${{ parameters.buildPlatform }}'
+    configuration: '${{ parameters.buildConfiguration }}'
+    searchFolder: '$(Pipeline.Workspace)\built-source'
+    resultsFolder: '$(Build.ArtifactStagingDirectory)/Test/Results'
+    otherConsoleOptions: '/collect:"Code Coverage;Format=Cobertura"'
+    codeCoverageEnabled: true
+
+# This task publishes the code coverage results.
+- task: PublishCodeCoverageResults@2
+  displayName: 'Publish test code coverage results'
+  inputs:
+    summaryFileLocation: '$(Build.ArtifactStagingDirectory)/Test/Results/**/*.xml'
+    pathToSources: '$(Pipeline.Workspace)\built-source'
