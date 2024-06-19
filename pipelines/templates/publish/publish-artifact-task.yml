@@ -1,0 +1,22 @@
+# This template is used to publish an artifact to the pipeline.
+
+parameters:
+  - name: cycle
+    type: string
+    default: ''
+  - name: installerOutputPath
+    type: string
+    default: ''
+  - name: installerType
+    type: string
+    default: ''
+
+steps:
+
+# This task publishes the installer artifact.
+#- task: PublishPipelineArtifact@1
+#  displayName: 'Publish installer'
+#  inputs:
+#    targetPath: '${{ parameters.installerOutputPath }}'
+#    artifact: '${{ parameters.cycle }}-${{ parameters.installerType }}'
+#    publishLocation: 'pipeline'

@@ -1,0 +1,142 @@
+# This template is used to get the list of publish tasks to be executed based on the input parameters.
+
+parameters:
+  - name: cycles
+    type: object
+    default: []
+  - name: updateTextFileName
+    type: string
+    default: ''
+  - name: updateSelfServeTextFileName
+    type: string
+    default: ''
+  - name: certificateFilename
+    type: string
+    default: ''
+  - name: standAloneInstallerProjectFilename
+    type: string
+    default: 'InstallerStandalone\\MyProject.aip'
+  - name: autoUpdaterInstallerProjectFilename
+    type: string
+    default: 'Installer\\MyProject.aip'
+  - name: advancedInstallerBuildName
+    type: string
+    default: 'DefaultBuild'
+  - name: advancedInstallerBuildParamsFilename
+    type: string
+    default: 'BuildInstallerParams.txt'
+  - name: updatesProjectFolder
+    type: string
+    default: 'InstallerUpdateConfiguration'
+  - name: updatesProjectFilename
+    type: string
+    default: 'InstallerUpdateConfiguration\\Update project.aip'
+  - name: installerUpdateTxtUrl
+    type: string
+    default: 'https://myinstallers.blob.core.windows.net/updates/specifycycle/specifyupdatetextfilename'
+  - name: installerUpdateMsiUrl
+    type: string
+    default: 'https://myinstallers.blob.core.windows.net/updates/specifycycle/specifymsiversion/specifymsifilename'
+  - name: autoupdater_installer_params
+    type: string
+    default: "{
+                  'InstallerType': 'autoupdater',
+                  'InstallerProjectPath': '{source}\\{name_of_aip_installer_file}',
+                  'UpdatesProjectFolder': '{source}\\{name_of_aip_folder}',
+                  'UpdatesProjectPath': '{source}\\{name_of_aip_updates_file}',
+                  'BuildName': '{name_of_aip_build}',
+                  'InstallerOutputPath': '{source}\\installer-output',
+                  'InstallerMsiName': 'specifyversionnumber-autoupdater-specifycycle',
+                  'BuildCertificatePath': '{source}\\{name_of_certificate}',
+                  'BuildParamsFilePath': '{source}\\{name_of_params_file}',
+                  'IsSelfServe': false,
+                  'IsAutoUpdater': true,
+                  'InstallerUpdateTxtUrl': '{specify_installer_update_txt_url}',
+                  'InstallerUpdateMsiUrl': '{specify_installer_update_msi_url}',
+                  'cycle': '{name_of_cycle}',
+                  'UpdateTextFileName': '{name_of_update_text_file_name}'
+              }"
+  - name: autoupdater_selfserve_installer_params
+    type: string
+    default: "{
+                  'InstallerType': 'autoupdater-selfserve',
+                  'InstallerProjectPath': '{source}\\{name_of_aip_installer_file}',
+                  'UpdatesProjectFolder': '{source}\\{name_of_aip_folder}',
+                  'UpdatesProjectPath': '{source}\\{name_of_aip_updates_file}',
+                  'BuildName': '{name_of_aip_build}',
+                  'InstallerOutputPath': '{source}\\installer-output',
+                  'InstallerMsiName': 'specifyversionnumber-selfserve-autoupdater-specifycycle',
+                  'BuildCertificatePath': '{source}\\{name_of_certificate}',
+                  'BuildParamsFilePath': '{source}\\{name_of_params_file}',
+                  'IsSelfServe': true,
+                  'IsAutoUpdater': true,
+                  'InstallerUpdateTxtUrl': '{specify_installer_update_txt_url}',
+                  'InstallerUpdateMsiUrl': '{specify_installer_update_msi_url}',
+                  'cycle': '{name_of_cycle}',
+                  'UpdateTextFileName': '{name_of_update_text_file_name}'
+              }"
+  - name: standalone_installer_params
+    type: string
+    default: "{
+                  'InstallerType': 'standalone',
+                  'InstallerProjectPath': '{source}\\{name_of_aip_installer_file}',
+                  'UpdatesProjectFolder': '{source}\\{name_of_aip_folder}',
+                  'UpdatesProjectPath': '{source}\\{name_of_aip_updates_file}',
+                  'BuildName': '{name_of_aip_build}',
+                  'InstallerOutputPath': '{source}\\installer-output',
+                  'InstallerMsiName': 'specifyversionnumber-specifycycle',
+                  'BuildCertificatePath': '{source}\\{name_of_certificate}',
+                  'BuildParamsFilePath': '{source}\\{name_of_params_file}',
+                  'IsSelfServe': false,
+                  'IsAutoUpdater': false,
+                  'InstallerUpdateTxtUrl': '',
+                  'InstallerUpdateMsiUrl': '',
+                  'cycle': '{name_of_cycle}',
+                  'UpdateTextFileName': ''
+              }"
+  - name: standalone_selfserve_installer_params
+    type: string
+    default: "{
+                  'InstallerType': 'standalone-selfserve',
+                  'InstallerProjectPath': '{source}\\{name_of_aip_installer_file}',
+                  'UpdatesProjectFolder': '{source}\\{name_of_aip_folder}',
+                  'UpdatesProjectPath': '{source}\\{name_of_aip_updates_file}',
+                  'BuildName': '{name_of_aip_build}',
+                  'InstallerOutputPath': '{source}\\installer-output',
+                  'InstallerMsiName': 'specifyversionnumber-selfserve-specifycycle',
+                  'BuildCertificatePath': '{source}\\{name_of_certificate}',
+                  'BuildParamsFilePath': '{source}\\{name_of_params_file}',
+                  'IsSelfServe': true,
+                  'IsAutoUpdater': false,
+                  'InstallerUpdateTxtUrl': '',
+                  'InstallerUpdateMsiUrl': '',
+                  'cycle': '{name_of_cycle}',
+                  'UpdateTextFileName': ''
+              }"
+
+steps:
+
+# This task gets the publish list.
+- task: PowerShell@2
+  name: get_matrix
+  displayName: 'Get publish list'
+  inputs:
+    filePath: ../built-source/pipelines/powershell-scripts/pipeline/get-publish-list.ps1
+    arguments: >
+      -pipelineWorkSpace "$(Pipeline.Workspace)"
+      -cyclesCommaSeparated "${{ join(',', parameters.cycles) }}"
+      -installerUpdateTxtUrl "${{ parameters.installerUpdateTxtUrl }}"
+      -installerUpdateMsiUrl "${{ parameters.installerUpdateMsiUrl }}"
+      -autoUpdaterInstallerProjectFilename "${{ parameters.autoUpdaterInstallerProjectFilename }}"
+      -standAloneInstallerProjectFilename "${{ parameters.standAloneInstallerProjectFilename }}"
+      -updateTextFileName "${{ parameters.updateTextFileName }}"
+      -updateSelfServeTextFileName "${{ parameters.updateSelfServeTextFileName }}"
+      -advancedInstallerBuildName "${{ parameters.advancedInstallerBuildName }}"
+      -certificateFilename "${{ parameters.certificateFilename }}"
+      -advancedInstallerBuildParamsFilename "${{ parameters.advancedInstallerBuildParamsFilename }}"
+      -updatesProjectFolder "${{ parameters.updatesProjectFolder }}"
+      -updatesProjectFilename "${{ parameters.updatesProjectFilename }}"
+      -autoupdater_installer_params "${{ parameters.autoupdater_installer_params }}"
+      -autoupdater_selfserve_installer_params "${{ parameters.autoupdater_selfserve_installer_params }}"
+      -standalone_installer_params "${{ parameters.standalone_installer_params }}"
+      -standalone_selfserve_installer_params "${{ parameters.standalone_selfserve_installer_params }}"

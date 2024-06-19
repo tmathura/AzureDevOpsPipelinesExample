@@ -14,6 +14,9 @@ parameters:
   - name: run_scripts
     type: boolean
     default: true
+  - name: run_publish
+    type: boolean
+    default: true
   - name: cycles
     type: object
     default:
@@ -26,4 +29,5 @@ stages:
 - template: templates/all-stages.yml
   parameters:
     runScripts: ${{ parameters.run_scripts }}
+    runPublish: ${{ parameters.run_publish }}
     cycles: ${{ parameters.cycles }}

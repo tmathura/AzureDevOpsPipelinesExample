@@ -4,6 +4,9 @@ parameters:
   - name: runScripts
     type: boolean
     default: false
+  - name: runPublish
+    type: boolean
+    default: false
   - name: cycles
     type: object
     default: []
@@ -19,8 +22,7 @@ stages:
 - template: test/test-stage.yml
 
 # This stage publishes the project.
-#- template: publish/publish-stage.yml
-#  parameters:
-#    createInstallers: ${{ parameters.createInstallers }}
-#    enableStagingEnvironment: ${{ parameters.enableStagingEnvironment }}
-#    tracks: ${{ parameters.tracks }}
+- template: publish/publish-stage.yml
+  parameters:
+    runPublish: ${{ parameters.runPublish }}
+    cycles: ${{ parameters.cycles }}

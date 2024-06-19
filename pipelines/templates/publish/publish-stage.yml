@@ -1,0 +1,88 @@
+# This template is used to create publish the artifacts for the different cycles.
+
+parameters:
+  - name: runPublish
+    type: boolean
+    default: false
+  - name: cycles
+    type: object
+    default: []
+
+stages:
+
+# This stage gets the list of installers to publish - check dev so we do not do a publish other PR branches.
+- stage: publish_list
+  condition: and(succeeded(), or(eq(${{ parameters.runPublish }}, 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/dev')))
+  dependsOn: build
+
+  variables:
+  - template: ../variables/build-and-test-variables.yml
+
+  jobs:
+
+  # This job gets the list of installers to publish.
+  - job: get_list
+
+    steps:
+
+    - checkout: none
+
+    - download: current
+      artifact: built-source
+
+    # This task gets list of installers to publish based on the cycles passed in.
+    - template: get-publish-list-task.yml
+      parameters:
+        cycles: ${{ parameters.cycles }}
+
+    # This task publishes the powershell scripts for release.
+    - task: PublishPipelineArtifact@1
+      displayName: 'Publish release powershell scripts'
+      inputs:
+        targetPath: '$(Pipeline.Workspace)\built-source\pipelines\powershell-scripts\deployment'
+        artifact: 'scripts'
+        publishLocation: 'pipeline'
+
+# This stage publishes the installers - check dev so we do not do a publish other PR branches.
+- stage: publish
+  condition: and(succeeded(), or(eq(${{ parameters.runPublish }}, 'true'), eq(variables['Build.SourceBranch'], 'refs/heads/dev')))
+  dependsOn: publish_list
+
+  variables:
+  - template: ../variables/build-and-test-variables.yml
+
+  jobs:
+
+  # This job publishes the installers - it runs in parallel with a max of creating two installers at a time.
+  - job: publish_installer
+    strategy:
+      maxParallel: 2
+      matrix: $[stageDependencies.publish_list.get_list.outputs['get_matrix.publishList']]
+
+    steps:
+
+    - checkout: none
+
+    - download: current
+      artifact: built-source
+
+    # This task does the publish job.
+    - template: publish-job.yml
+      parameters:
+        enableStagingEnvironment: ${{ parameters.enableStagingEnvironment }}
+        cycle: $(Cycle)
+        buildConfiguration: ${{ variables.buildConfiguration }}
+        installerProjectPath: $(InstallerProjectPath)
+        buildName: $(BuildName)
+        installerOutputPath: $(InstallerOutputPath)
+        installerMsiName: $(InstallerMsiName)
+        buildCertificatePath: $(BuildCertificatePath)
+        buildParamsFilePath: $(BuildParamsFilePath)
+        isSelfServe: $(IsSelfServe)
+        isAutoUpdater: $(IsAutoUpdater)
+        installerUpdateTxtUrl: $(InstallerUpdateTxtUrl)
+        installerUpdateMsiUrl: $(InstallerUpdateMsiUrl)
+        updateTextFileName: $(UpdateTextFileName)
+        updatesProjectFolder: $(UpdatesProjectFolder)
+        updatesProjectPath: $(UpdatesProjectPath)
+        installerType: $(InstallerType)

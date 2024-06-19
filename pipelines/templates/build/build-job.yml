@@ -44,7 +44,7 @@ steps:
     nugetConfigPath: './nuget.config'
     restoreSolution: '${{ parameters.solution }}'
 
-# This task builds the DataSnipper project.
+# This task builds the project.
 - task: VSBuild@1
   displayName: 'Build solution'
   inputs:
