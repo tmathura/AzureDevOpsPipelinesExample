@@ -1,9 +1,6 @@
 # This template is used to create an installer and update.txt file for the project.
 
 parameters:
-  - name: enableStagingEnvironment
-    type: boolean
-    default: false
   - name: cycle
     type: string
     default: ''
@@ -61,7 +58,6 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      Write-Output "enableStagingEnvironment: ${{ parameters.enableStagingEnvironment }}"
       Write-Output "cycle: ${{ parameters.cycle }}"
       Write-Output "buildConfiguration: ${{ parameters.buildConfiguration }}"
       Write-Output "installerProjectPath: ${{ parameters.installerProjectPath }}"

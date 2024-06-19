@@ -69,7 +69,6 @@ stages:
     # This task does the publish job.
     - template: publish-job.yml
       parameters:
-        enableStagingEnvironment: ${{ parameters.enableStagingEnvironment }}
         cycle: $(Cycle)
         buildConfiguration: ${{ variables.buildConfiguration }}
         installerProjectPath: $(InstallerProjectPath)
