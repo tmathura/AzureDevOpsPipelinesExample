@@ -2,7 +2,7 @@ namespace Calculator.Core.UnitTests
 {
     public class AdditionBllTests
     {
-        private readonly IAdditionBll _additionBll = new AdditionBll();
+        private readonly AdditionBll _additionBll = new();
 
         [Fact]
         public void Add_Test1()
@@ -17,7 +17,6 @@ namespace Calculator.Core.UnitTests
 
             // Assert
             Assert.Equal(expected, actual);
-
         }
     }
 }
