@@ -78,23 +78,23 @@ steps:
 - task: PowerShell@2
   displayName: 'Get installer version'
   inputs:
-    filePath: ../datasnipper-source/pipelines/powershell-scripts/pipeline/get-installer-version-from-txt.ps1
+    filePath: ../built-source/pipelines/powershell-scripts/pipeline/get-installer-version-from-txt.ps1
     arguments: >
-      -filePath "$(Pipeline.Workspace)\datasnipper-source\installer-version.txt"
+      -filePath "$(Pipeline.Workspace)\built-source\installer-version.txt"
 
 # This task gets the custom tag from the installer-custom-tag.txt file.
 - task: PowerShell@2
   displayName: 'Get custom tag'
   inputs:
-    filePath: ../datasnipper-source/pipelines/powershell-scripts/pipeline/get-custom-tag-from-txt.ps1
+    filePath: ../built-source/pipelines/powershell-scripts/pipeline/get-custom-tag-from-txt.ps1
     arguments: >
-      -filePath "$(Pipeline.Workspace)\datasnipper-source\installer-custom-tag.txt"
+      -filePath "$(Pipeline.Workspace)\built-source\installer-custom-tag.txt"
 
 # This task creates the installer folder.
 - task: PowerShell@2
   displayName: 'Create installer folder'
   inputs:
-    filePath: ../datasnipper-source/pipelines/powershell-scripts/pipeline/create-installer-folder.ps1
+    filePath: ../built-source/pipelines/powershell-scripts/pipeline/create-installer-folder.ps1
     arguments: >
       -installerOutputPath "${{ parameters.installerOutputPath }}"
 
