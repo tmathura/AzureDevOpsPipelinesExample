@@ -4,9 +4,6 @@ parameters:
   - name: runScripts
     type: boolean
     default: false
-  - name: buildConfiguration
-    type: string
-    default: ''
   - name: cycles
     type: object
     default: []
@@ -16,10 +13,10 @@ stages:
 # This stage builds the project.
 - template: build/build-stage.yml
   parameters:
-    buildConfiguration: ${{ parameters.buildConfiguration }}
+    runScripts: ${{ parameters.runScripts }}
 
 # This stage tests the project.
-#- template: test/test-stage.yml
+- template: test/test-stage.yml
 
 # This stage publishes the project.
 #- template: publish/publish-stage.yml

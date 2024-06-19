@@ -10,9 +10,6 @@ parameters:
   - name: run_scripts
     type: boolean
     default: false
-  - name: build_configuration
-    type: string
-    default: Debug
   - name: cycles
     type: object
     default:
@@ -24,5 +21,4 @@ stages:
 - template: templates/all-stages.yml
   parameters:
     runScripts: ${{ parameters.run_scripts }}
-    buildConfiguration: ${{ parameters.build_configuration }}
     cycles: ${{ parameters.cycles }}

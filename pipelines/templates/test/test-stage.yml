@@ -1,0 +1,50 @@
+# This template is used to run tests on the project.
+
+stages:
+
+# This stage gets the list of tests to run.
+- stage: test_list
+  dependsOn: build
+  jobs:
+
+  # This job gets the list of tests to run.
+  - job: get_list
+  
+    steps:
+
+    - checkout: none
+
+    - download: current
+      artifact: built-source
+    
+    # This task gets the list of tests to run.
+    - template: get-test-list-task.yml
+
+# This stage runs the tests.
+- stage: test
+  dependsOn: test_list
+
+  variables:
+  - template: ../variables/build-and-test-variables.yml
+
+  jobs:
+
+  # This job runs the tests - it runs in parallel with a max of running two tests at a time.
+  - job: run_test
+    strategy:
+      maxParallel: 2
+      matrix: $[stageDependencies.test_list.get_list.outputs['get_list_task.testList']]
+
+    steps:
+
+    - checkout: none
+
+    - download: current
+      artifact: built-source
+
+    # This task runs the tests.
+    - template: test-job.yml
+      parameters:
+        buildPlatform: ${{ variables.buildPlatform }}
+        buildConfiguration: ${{ variables.buildConfiguration }}
+        testProjectName: $(TestProjectName)

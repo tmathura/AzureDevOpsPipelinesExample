@@ -1,0 +1,12 @@
+# This template is used to get the list of tests to run from the source folder
+
+steps:
+
+# This task gets the list of tests to run.
+- task: PowerShell@2
+  name: get_list_task
+  displayName: 'Get test list'
+  inputs:
+    filePath: ../built-source/pipelines/powershell-scripts/pipeline/get-test-list.ps1
+    arguments: >
+      -sourceFolder "$(Pipeline.Workspace)\built-source"

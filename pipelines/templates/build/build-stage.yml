@@ -1,9 +1,9 @@
 # This template is used to define the build stage of the pipeline.
 
 parameters:
-  - name: buildConfiguration
-    type: string
-    default: ''
+  - name: runScripts
+    type: boolean
+    default: false
 
 stages:
 
@@ -26,5 +26,7 @@ stages:
     # This task builds the project.
     - template: build-job.yml
       parameters:
-        buildConfiguration: ${{ parameters.buildConfiguration }}
+        runScripts: ${{ parameters.runScripts }}
+        solution: ${{ variables.solution }}
         buildPlatform: ${{ variables.buildPlatform }}
+        buildConfiguration: ${{ variables.buildConfiguration }}

@@ -1,17 +1,35 @@
 # This file contains the build pipeline template for the project.
 
 parameters:
-  - name: buildConfiguration
+  - name: runScripts
+    type: boolean
+    default: false
+  - name: solution
     type: string
     default: ''
   - name: buildPlatform
     type: string
     default: ''
-  - name: solution
+  - name: buildConfiguration
     type: string
-    default: '**/*.sln'
+    default: ''
+  - name: randomParameter
+    type: string
+    default: 'MyValue'
 
 steps:
+
+# This task prints the values.
+- task: PowerShell@2
+  displayName: 'Print values'
+  inputs:
+    targetType: 'inline'
+    script: |
+      Write-Output "run scripts: ${{ parameters.runScripts }}"
+      Write-Output "solution: ${{ parameters.solution }}"
+      Write-Output "build platform: ${{ parameters.buildPlatform }}"
+      Write-Output "build configuration: ${{ parameters.buildConfiguration }}"
+      Write-Output "random parameter: ${{ parameters.RandomParameter }}"
 
 # This task installs the NuGet tool.
 - task: NuGetToolInstaller@1
