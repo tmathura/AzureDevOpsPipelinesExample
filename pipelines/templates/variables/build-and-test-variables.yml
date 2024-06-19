@@ -1,0 +1,5 @@
+# This file contains the variables that are used in the pipeline templates.
+
+variables:
+- name: buildPlatform
+  value: 'Any CPU'

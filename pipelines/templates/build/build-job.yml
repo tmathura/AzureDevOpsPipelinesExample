@@ -1,0 +1,40 @@
+# This file contains the build pipeline template for the project.
+
+parameters:
+  - name: buildConfiguration
+    type: string
+    default: ''
+  - name: buildPlatform
+    type: string
+    default: ''
+  - name: solution
+    type: string
+    default: '**/*.sln'
+
+steps:
+
+# This task installs the NuGet tool.
+- task: NuGetToolInstaller@1
+  displayName: 'Install NuGet'
+
+# This task restores the NuGet packages.
+- task: NuGetCommand@2
+  displayName: 'Restore packages'
+  inputs:
+    command: 'restore'
+    feedsToUse: 'config'
+    nugetConfigPath: './Nuget.config'
+    restoreSolution: '${{ parameters.solution }}'
+
+# This task builds the DataSnipper project.
+- task: VSBuild@1
+  displayName: 'Build solution'
+  inputs:
+    solution: '${{ parameters.solution }}'
+    platform: '${{ parameters.buildPlatform }}'
+    configuration: '${{ parameters.buildConfiguration }}'
+    msbuildArgs: '/p:TreatWarningsAsErrors="true"'
+
+# This task publishes the build result.
+- publish: $(Build.SourcesDirectory) 
+  artifact: built-source

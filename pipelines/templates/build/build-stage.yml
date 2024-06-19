@@ -1,0 +1,30 @@
+# This template is used to define the build stage of the pipeline.
+
+parameters:
+  - name: buildConfiguration
+    type: string
+    default: ''
+
+stages:
+
+# This stage builds the project.
+- stage: build
+
+  variables:
+  - template: ../variables/build-and-test-variables.yml
+
+  jobs:
+
+  # This job runs the build.
+  - job: run_build
+
+    steps:
+
+    - checkout: self
+      lfs: true
+
+    # This task builds the project.
+    - template: build-job.yml
+      parameters:
+        buildConfiguration: ${{ parameters.buildConfiguration }}
+        buildPlatform: ${{ variables.buildPlatform }}

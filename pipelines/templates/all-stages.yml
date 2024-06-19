@@ -1,0 +1,29 @@
+# This yaml file defines the stages that will be used in the pipeline.
+
+parameters:
+  - name: runScripts
+    type: boolean
+    default: false
+  - name: buildConfiguration
+    type: string
+    default: ''
+  - name: cycles
+    type: object
+    default: []
+
+stages:
+
+# This stage builds the project.
+- template: build/build-stage.yml
+  parameters:
+    buildConfiguration: ${{ parameters.buildConfiguration }}
+
+# This stage tests the project.
+#- template: test/test-stage.yml
+
+# This stage publishes the project.
+#- template: publish/publish-stage.yml
+#  parameters:
+#    createInstallers: ${{ parameters.createInstallers }}
+#    enableStagingEnvironment: ${{ parameters.enableStagingEnvironment }}
+#    tracks: ${{ parameters.tracks }}
