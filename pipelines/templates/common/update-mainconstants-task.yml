@@ -1,0 +1,34 @@
+# This template is used to update the MainConstants.cs file in the project.
+
+parameters:
+  - name: updateMainConstantsFilePath
+    type: string
+  - name: mainConstantsFilePath
+    type: string
+    default: ''
+  - name: propertyName
+    type: string
+    default: ''
+  - name: findString
+    type: string
+    default: ''
+  - name: replaceString
+    type: string
+    default: ''
+  - name: doReplace
+    type: string
+    default: 'false'
+
+steps:
+
+# This task updates the MainConstants.cs file.
+- task: PowerShell@2
+  displayName: 'Update MainConstants.cs ${{ parameters.propertyName }}'
+  inputs:
+    filePath: ${{ parameters.updateMainConstantsFilePath }}
+    arguments: >
+      -findString "${{ parameters.findString }}"
+      -replaceString "${{ parameters.replaceString }}"
+      -filePath "${{ parameters.mainConstantsFilePath }}"
+      -doReplace "${{ parameters.doReplace }}"
+      -propertyName "${{ parameters.propertyName }}"

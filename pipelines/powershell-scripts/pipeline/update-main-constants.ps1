@@ -1,4 +1,4 @@
-# Update the core constants in the specified file
+# Update the main constants in the specified file
 
 param (
     [string]$findString,

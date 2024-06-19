@@ -47,8 +47,8 @@ steps:
 # This task updates the MainConstants.cs file.
 - template: ../common/update-mainconstants-task.yml
   parameters:
-      updateCoreConstantsFilePAth: './pipelines/powershell-scripts/pipeline/update-main-constants.ps1'
-      coreConstantsFilePath: '.\Calculator.Core\MainConstants.cs'
+      updateMainConstantsFilePath: './pipelines/powershell-scripts/pipeline/update-main-constants.ps1'
+      mainConstantsFilePath: '.\Calculator.Core\MainConstants.cs'
       propertyName: 'BuildNumber'
       findString: 'public const string BuildNumber = '''';'
       replaceString: 'public const string BuildNumber = ''$(Build.BuildNumber)'';'
