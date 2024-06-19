@@ -23,7 +23,7 @@ steps:
   inputs:
     command: 'restore'
     feedsToUse: 'config'
-    nugetConfigPath: './Nuget.config'
+    nugetConfigPath: './nuget.config'
     restoreSolution: '${{ parameters.solution }}'
 
 # This task builds the DataSnipper project.
