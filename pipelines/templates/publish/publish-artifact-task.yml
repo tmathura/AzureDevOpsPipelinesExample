@@ -13,6 +13,16 @@ parameters:
 
 steps:
 
+# This task prints the values.
+- task: PowerShell@2
+  displayName: 'Print matrix values'
+  inputs:
+    targetType: 'inline'
+    script: |
+      Write-Output "cycle: ${{ parameters.cycle }}"
+      Write-Output "installerOutputPath: ${{ parameters.installerOutputPath }}"
+      Write-Output "installerType: ${{ parameters.installerType }}"
+
 # This task publishes the installer artifact.
 #- task: PublishPipelineArtifact@1
 #  displayName: 'Publish installer'
