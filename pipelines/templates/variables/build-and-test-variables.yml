@@ -7,3 +7,7 @@ variables:
   value: 'Any CPU'
 - name: buildConfiguration
   value: 'Release'
+- name: updateTextFileName
+  value: 'update-specifytrack.txt'
+- name: updateSelfServeTextFileName
+  value: 'update-selfserve-specifytrack.txt'
