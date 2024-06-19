@@ -44,6 +44,51 @@ steps:
     nugetConfigPath: './nuget.config'
     restoreSolution: '${{ parameters.solution }}'
 
+# This task updates the MainConstants.cs file.
+- template: ../common/update-mainconstants-task.yml
+  parameters:
+      updateCoreConstantsFilePAth: './pipelines/powershell-scripts/pipeline/update-main-constants.ps1'
+      coreConstantsFilePath: '.\Calculator.Core\MainConstants.cs'
+      propertyName: 'BuildNumber'
+      findString: 'public const string BuildNumber = '''';'
+      replaceString: 'public const string BuildNumber = ''$(Build.BuildNumber)'';'
+      doReplace: 'true'
+
+# This task gets the installer version.
+- task: PowerShell@2
+  name: get_installer_version
+  displayName: 'Get installer Version'
+  inputs:
+    filePath: ./pipelines/powershell-scripts/pipeline/get-installer-version.ps1
+
+# This task stores the installer version.
+- task: PowerShell@2
+  displayName: 'Store installer version'
+  inputs:
+    filePath: ./pipelines/powershell-scripts/pipeline/store-data-to-file.ps1
+    arguments: >
+      -dataToStore "$(currentVersionNumber)"
+      -saveFilePath "$(Build.SourcesDirectory)\installer-version.txt"
+
+# This task gets the custom tag.
+- task: PowerShell@2
+  name: get_custom_tag
+  displayName: 'Get custom tag'
+  inputs:
+    filePath: ./pipelines/powershell-scripts/pipeline/get-custom-tag.ps1
+    arguments: >
+      -sourceBranch "$(Build.SourceBranch)"
+      -versionNumber "$(currentVersionNumber)"
+
+# This task stores the custom tag.
+- task: PowerShell@2
+  displayName: 'Store custom tag'
+  inputs:
+    filePath: ./pipelines/powershell-scripts/pipeline/store-data-to-file.ps1
+    arguments: >
+      -dataToStore "$(currentCustomTag)"
+      -saveFilePath "$(Build.SourcesDirectory)\installer-custom-tag.txt"
+
 # This task builds the project.
 - task: VSBuild@1
   displayName: 'Build solution'
@@ -56,3 +101,11 @@ steps:
 # This task publishes the build result.
 - publish: $(Build.SourcesDirectory) 
   artifact: built-source
+
+# This task publishes the installer version.
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish installer version'
+  inputs:
+    targetPath: '$(Build.SourcesDirectory)\installer-version.txt'
+    artifact: 'installer-version'
+    publishLocation: 'pipeline'

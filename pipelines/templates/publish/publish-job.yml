@@ -104,3 +104,12 @@ steps:
     cycle: ${{ parameters.cycle }}
     installerOutputPath: ${{ parameters.installerOutputPath }}
     installerType: $(InstallerType)
+
+# This task prints the txt values.
+- task: PowerShell@2
+  displayName: 'Print txt values'
+  inputs:
+    targetType: 'inline'
+    script: |
+      Write-Output "Version: $(currentVersionNumber)"
+      Write-Output "Custom tag: $(currentCustomTag)"
