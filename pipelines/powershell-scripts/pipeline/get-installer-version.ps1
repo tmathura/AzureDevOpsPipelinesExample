@@ -2,8 +2,8 @@
 
 $thisVersionNumber = 0.0.0
 
-# Path to CoreConstants.cs
-$filePath = '.\Calculator.Core\CoreConstants.cs'
+# Path to MainConstants.cs
+$filePath = '.\Calculator.Core\MainConstants.cs'
 
 # Read the content of the file
 $fileContent = Get-Content -Path $filePath -Raw
